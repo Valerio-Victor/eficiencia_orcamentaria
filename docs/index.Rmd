@@ -1,0 +1,58 @@
+---
+title: '**ARTIGO SOBRE EFICIÊNCIA DE EXECUÇÃO ORÇAMENTÁRIA - IFES**'
+author: '***AUTORES**: *Lívia Siqueira; Victor Valerio*'
+date: "`r format(Sys.Date(), '%d-%m-%Y')`"
+output:
+  prettydoc::html_pretty:
+    theme: architect
+    highlight: github
+---
+
+# IMPORTAÇÃO DE ARRUMAÇÃO
+Abaixo o processo de importação e arrumação dos dados. Na etapa de arrumação, 
+alterou-se a coluna de DMU's (foram desmembradas em duas colunas, DMU e Ano):
+
+```{r echo=TRUE}
+#PACOTES NECESSÁRIOS:
+library(magrittr)
+
+# IMPORTAÇÃO DOS DADOS:
+matriz_io <- readxl::read_xlsx(path = '../dados/matriz_io.xlsx')
+
+# ARRUMAÇÃO DOS DADOS: 
+matriz_io <- matriz_io %>% 
+  tidyr::separate(dmu, sep = ' ', into = c('dmu','ano'))
+
+DT::datatable(matriz_io, 
+              caption = 'TABELA 01: Amostra de Dados')
+
+```
+
+# ESTATÍSTICA DESCRITIVA
+Depois foi realizada a estatística descritiva da amostra.
+
+# ANÁLISE DE EFICIÊNCIA
+```{r}
+#TRATAMENTO DOS DADOS 
+inputs <- matriz_io %>% 
+  dplyr::select(capital, pessoal, material_consumo)
+
+outputs <- matriz_io %>% 
+  dplyr::select(projetos_extensao,
+                ch_docente,
+                media_conceitos_cursos,
+                participacao_prod_cientifica)
+
+resultados <- rDEA::dea(XREF = inputs,
+                        YREF = outputs,
+                        X = inputs,
+                        Y = outputs,
+                        model = 'input',
+                        RTS = 'constant')
+
+eficiencia <- cbind(matriz_io$ano, matriz_io$dmu,resultados[["thetaOpt"]])
+
+DT::datatable(eficiencia, 
+              caption = 'TABELA 02: Resultados')
+```
+
