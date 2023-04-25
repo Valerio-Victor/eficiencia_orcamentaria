@@ -12,6 +12,9 @@ output:
 Abaixo o processo de importação e arrumação dos dados. Na etapa de arrumação, 
 alterou-se a coluna de DMU's (foram desmembradas em duas colunas, DMU e Ano):
 
+Tarefa:
+
+- Separar só OCC e Orçamento Total
 ```{r echo=TRUE}
 #PACOTES NECESSÁRIOS:
 library(magrittr)
@@ -31,7 +34,17 @@ DT::datatable(matriz_io,
 # ESTATÍSTICA DESCRITIVA
 Depois foi realizada a estatística descritiva da amostra.
 
+montar a tabela de estatistica descritiva de cada variável e possíveis gráficos 
+(boxplot por instituto ou por ano aou ambos)
+```{r}
+summary(matriz_io$capital)
+```
+
+
 # ANÁLISE DE EFICIÊNCIA
+
+rodas separado para orçamento total e para orçamento OCC
+
 ```{r}
 #TRATAMENTO DOS DADOS 
 inputs <- matriz_io %>% 
